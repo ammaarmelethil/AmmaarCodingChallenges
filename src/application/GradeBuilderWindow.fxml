@@ -16,7 +16,7 @@
    <children>
       <HBox prefHeight="27.0" prefWidth="380.0">
          <children>
-            <Label text="Project Grade:">
+         	<Label text="Project Grade:">
                <HBox.margin>
                   <Insets top="5.0" />
                </HBox.margin>
@@ -30,6 +30,8 @@
                <HBox.margin>
                   <Insets left="5.0" top="5.0" />
                </HBox.margin>
+            </Label>
+            <Label fx:id="projectErrorLabel" text="There is an error!" textfill="RED">
             </Label>
          </children>
          <VBox.margin>
