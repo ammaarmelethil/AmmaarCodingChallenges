@@ -31,8 +31,14 @@
                   <Insets left="5.0" top="5.0" />
                </HBox.margin>
             </Label>
+            
+            <Label text="This should cause a merge conflict"/>
+
             <Label fx:id="projectErrorLabel" text="There is an Error!" textFill="RED">
             </Label>
+
+            
+
          </children>
          <VBox.margin>
             <Insets left="20.0" top="30.0" />

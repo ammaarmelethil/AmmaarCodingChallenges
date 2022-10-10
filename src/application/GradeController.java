@@ -35,13 +35,13 @@ public class GradeController {
     	System.out.println("Project grade: " + projectGrade + " Course grade so far: " + courseGrade);
     	
     	double quizGrade = quizSlider.getValue();
-    	courseGrade += (quizGrade*(100/10))*0.15;
+    	courseGrade += (quizGrade*(100/10))*0.25;
     	System.out.println("Quiz grade: " + quizGrade + " Course grade so far: " + courseGrade);
     	
     	int requiredCodingChallengesPassed = requiredCodingChallengesChoicebox.getValue(); 
     	int optionalCodingChallengesPassed = optionalCodingChallengesChoiceBox.getValue();
     	int codingChallengesPassed = requiredCodingChallengesPassed + optionalCodingChallengesPassed;
-    	courseGrade += (codingChallengesPassed*(100/20))*0.35;
+    	courseGrade += (codingChallengesPassed*(100/20))*0.25;
     	System.out.println("Coding Challenges Passed: " + codingChallengesPassed + " Course grade so far: " + courseGrade);
 
     	courseGradeLabel.setText(String.format("Your course grade is %.2f", courseGrade));
