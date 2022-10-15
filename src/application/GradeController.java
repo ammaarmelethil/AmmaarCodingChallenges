@@ -27,12 +27,81 @@ public class GradeController {
     @FXML 
     private Label projectErrorLabel;
     
+    /**
+     * Convert the value entered to a double value. This method will verify if the value entered is actually
+     * a number and if the value is a valid percentage grade i.e equal to or between 0 and 100. If the value entered is 
+     * not a valid percentage grade, this method will return 0.0 as the project grade instead.  
+     * 
+     * @param valueEntered : a String that holds a value entered by the user intended to be a project grade 
+     * @return the project value entered by the user if it is a valid percentage grade and 0 otherwise 
+     */
+    double getProjectGrade(String valueEntered) {
+    	// Check that the string entered by the user is a valid decimal number
+    	
+    	 
+    	
+    	boolean validProjectGrade = true;
+    	int numberOfDecimalPoints = 0;
+      
+    	
+    	for (char c : valueEntered.toCharArray()) {
+    		
+    		// Check if the character is a floating point value else if it has too many decimal points (.)
+    		if (c =='.') {
+    			numberOfDecimalPoints += 1;
+    			if (numberOfDecimalPoints <= 1) {
+    				validProjectGrade = true;
+    			} else if (numberOfDecimalPoints > 1) {
+    				validProjectGrade = false;
+    				projectErrorLabel.setText("You used " + numberOfDecimalPoints + " decimal points in a project grade. Make sure to enter one decimal");
+    			} 
+    		// Check if the character is a digit 	
+    		} else if (!Character.isDigit(c)) {
+    			validProjectGrade = false;
+    			projectErrorLabel.setText("Do not use " + c + " in a project grade. Make sure to enter a number between 0 and 100"); 
+			
+			
+			}
+        			
+    	}		
+    	
+    	
+    	// Convert the string entered by the user into a number
+    	// Otherwise the project grade will default to zero 
+    	
+    	double projectGrade = 0;
+    	if (validProjectGrade) {
+    		projectGrade = Double.parseDouble(valueEntered);
+    	}
+    	
+    	// Check if the number entered by the user is a valid percentage grade
+    	// If valid, include the provided number in the overall grade calculation    
+    	if (projectGrade < 0 || projectGrade > 100) {
+    		projectErrorLabel.setText("Project grade should be between 0% and 100%");
+    		projectGrade = 0;    	
+    	}
+    	
+    	return projectGrade;
+    	
+    }
+    
     @FXML
     void calculateGrade(ActionEvent event) {
+    	
+    	// Clear all error messages
+    	projectErrorLabel.setText("");
     	double courseGrade = 0.0;
-    	String projectGrade = projectGradeTextfield.getText();
-    	courseGrade = Double.parseDouble(projectGrade)*0.5;
-    	System.out.println("Project grade: " + projectGrade + " Course grade so far: " + courseGrade);
+    	
+    	
+    	// Assuming the project is worth 50% towards the course grade
+    	String projectValueEntered = projectGradeTextfield.getText();
+    	
+    	double projectGrade = getProjectGrade(projectValueEntered);    	
+    	
+    	courseGrade += projectGrade*0.5;
+    	
+    	
+    	System.out.println("Project grade entered: " + projectGrade + " Course grade so far: " + courseGrade);
     	
     	double quizGrade = quizSlider.getValue();
     	courseGrade += (quizGrade*(100/10))*0.25;
