@@ -4,7 +4,7 @@ package basicjava;
 public class CCStringsIfAndWhile {
 
 	public static boolean isDigit(char c) {
-		if (Character.isDigit(c)) {
+		if (c <= '9' && c >= '0') {
 			return true;
 		} else {
 			return false;
@@ -30,6 +30,21 @@ public class CCStringsIfAndWhile {
 		
 		
 		
+		// Did the same thing using a while loop but decided to comment it as it is more complex.
+//		int i = 0;
+//		int j = 0;
+//		while (i < str.length() && j < chars.length()) {
+//			if (str.charAt(i) == chars.charAt(j)) {
+//				instances++;
+//				i++;
+//			} else if ((i+1)==str.length() && j < chars.length()) {
+//				i = 0;
+//				j++;
+//			} else {
+//				i++;
+//			}
+//			
+//		}
 		return instances;
 	}
 
@@ -50,15 +65,14 @@ public class CCStringsIfAndWhile {
 		// iterates through each digit and resets smallestNumber if condition holds true
 		while (i > 0) {
 			lastDigit = i % 10;
-			
 			if (lastDigit < smallestNumber) {
 				smallestNumber = lastDigit;
 			}
-			
 			i /= 10;
 		}
 		
 		return smallestNumber;
 	}
+	
 
 }
