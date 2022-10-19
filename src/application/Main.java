@@ -15,7 +15,10 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			VBox root = loader.load(new FileInputStream("src/application/GradeBuilderWindow.fxml"));
-			Scene scene = new Scene(root,800,400);
+			GradeController controller = (GradeController)loader.getController();
+			controller.applicationStage = primaryStage;
+			
+			Scene scene = new Scene(root,900,400);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Ammaar's Grade Calculator");
 			primaryStage.show();
