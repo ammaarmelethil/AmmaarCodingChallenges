@@ -21,7 +21,11 @@ public class CCArrayList {
 	}
 
 	public static void insert(ArrayList<Double> nums, double numToInsert, int insertAtIndex) {
-		
+		if (nums.size() == 0) {
+			;
+		} else {
+			nums.add(insertAtIndex, numToInsert);
+		}
 		
 	}
 	
