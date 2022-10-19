@@ -1,5 +1,6 @@
 package basicjava;
 
+import java.util.Arrays;
 
 public class CCArrays {
 
@@ -14,6 +15,7 @@ public class CCArrays {
 	}
 
 	public static void sortAlphabetic(String[] strArray) {
+		Arrays.sort(strArray, String.CASE_INSENSITIVE_ORDER);
 		
 	}
 	
