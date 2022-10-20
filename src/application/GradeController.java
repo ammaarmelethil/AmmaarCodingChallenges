@@ -113,8 +113,8 @@ public class GradeController {
     		averageofRequiredQuizGrades += Double.parseDouble(quizGradeTextfield.getText());
     	}
     	
-    	averageofRequiredQuizGrades = averageofRequiredQuizGrades / quizGradeTextfields.size();
-    	averageRequiredQuizGradeLabel.setText("Average required quiz grade (/10): "+averageofRequiredQuizGrades);
+    	averageofRequiredQuizGrades = averageofRequiredQuizGrades / 150;
+    	averageRequiredQuizGradeLabel.setText(String.format("Average required quiz grade: %.2f%%", averageofRequiredQuizGrades*100));
 
     	
     }
@@ -143,8 +143,8 @@ public class GradeController {
     	
     	}
     	
-    	averageofOptionalQuizGrades = averageofOptionalQuizGrades / grades.size();
-    	averageOptionalQuizGradeLabel.setText("Average optional quiz grade (/10): "+averageofOptionalQuizGrades);
+    	averageofOptionalQuizGrades = averageofOptionalQuizGrades / 50;
+    	averageOptionalQuizGradeLabel.setText(String.format("Average optional quiz grade: %.2f%%", averageofOptionalQuizGrades*100));
     }
    
     
@@ -247,8 +247,8 @@ public class GradeController {
     	// assuming that quizzes are worth 25% towards the course grade
     	// assuming that there are 15 required quizzes and 7 optional
 
-    	courseGrade += (averageofRequiredQuizGrades/10)*18.75;
-    	courseGrade += (averageofOptionalQuizGrades/10)*6.25;
+    	courseGrade += (averageofRequiredQuizGrades)*18.75;
+    	courseGrade += (averageofOptionalQuizGrades)*6.25;
     	
     	
     	// Number of coding challenges passed
