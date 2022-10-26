@@ -103,8 +103,7 @@ public class GradeController {
     }
     
     double averageofRequiredQuizGrades = 0.0;
-    
-    
+    // Calculates grade from required quizzes relative to overall grade
     void calculateAverageRequiredQuizGrade(Scene mainScene, ArrayList<TextField> quizGradeTextfields) {
     	applicationStage.setScene(mainScene);
     	// Made sure to reset to zero, in case it contains a  previously computed value
@@ -120,29 +119,33 @@ public class GradeController {
     }
     
     double averageofOptionalQuizGrades = 0.0;
-    
+ // Calculates grade from optional quizzes relative to overall grade, uses the 5 highest grades
     void calculateAverageOptionalQuizGrade(Scene mainScene, ArrayList<TextField> quizGradeTextfields) {
     	applicationStage.setScene(mainScene);
     	// Made sure to reset to zero, in case it contains a  previously computed value
     	averageofOptionalQuizGrades = 0.0;
     	
+    	// New ArrayList created of type double from type TextField to find 5 highest grades
     	ArrayList<Double> grades = new ArrayList<Double>();
 		for (TextField quizGradeTextfield : quizGradeTextfields) {
 			grades.add(Double.parseDouble(quizGradeTextfield.getText()));
 		}
 
-    	
-    	if (quizGradeTextfields.size() > 5) {
+    	// Removes lowest grades if more than 5 optional quizzes are completed. 
+    	if (quizGradeTextfields.size() == 7) {
     		grades.remove(grades.indexOf(Collections.min(grades)));
     		grades.remove(grades.indexOf(Collections.min(grades)));
+		} else if (quizGradeTextfields.size() == 6) {
+			grades.remove(grades.indexOf(Collections.min(grades)));
 		}
     	
-    	
+    	// Adds grades from Double ArrayList to total
     	for (double grade : grades) {
     		averageofOptionalQuizGrades += grade;
     	
     	}
     	
+    	// Finds grade relative to overall grade
     	averageofOptionalQuizGrades = averageofOptionalQuizGrades / 50;
     	averageOptionalQuizGradeLabel.setText(String.format("Average optional quiz grade: %.2f%%", averageofOptionalQuizGrades*100));
     }
@@ -260,7 +263,7 @@ public class GradeController {
     	courseGrade += (codingChallengesPassed*(100/20))*0.25;
     	System.out.println("Coding Challenges Passed: " + codingChallengesPassed + " Course grade so far: " + courseGrade);
 
-    	courseGradeLabel.setText(String.format("Your course grade is %.2f", courseGrade));
+    	courseGradeLabel.setText(String.format("Your course grade is %.2f%%", courseGrade));
     }
 
 }
