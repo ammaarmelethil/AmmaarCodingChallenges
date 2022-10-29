@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class GradeController {
 	Stage applicationStage;
@@ -44,109 +45,59 @@ public class GradeController {
     @FXML 
     private Label projectErrorLabel;
     
-    /**
-     * Convert the value entered to a double value. This method will verify if the value entered is actually
-     * a number and if the value is a valid percentage grade i.e equal to or between 0 and 100. If the value entered is 
-     * not a valid percentage grade, this method will return 0.0 as the project grade instead.  
-     * 
-     * @param valueEntered : a String that holds a value entered by the user intended to be a project grade 
-     * @return the project value entered by the user if it is a valid percentage grade and 0 otherwise 
-     */
-    double getProjectGrade(String valueEntered) {
-    	// Check that the string entered by the user is a valid decimal number
-    	
-    	 
-    	
-    	boolean validProjectGrade = true;
-    	int numberOfDecimalPoints = 0;
-      
-    	
-    	for (char c : valueEntered.toCharArray()) {
+    
+    
+    void removeSmallest(ArrayList<TextField> textFieldArrayList) {
+    	int smallestNumberKey = 0;
+    	for (int i = 0; i < textFieldArrayList.size()-1; i++) {
     		
-    		// Check if the character is a floating point value else if it has too many decimal points (.)
-    		if (c =='.') {
-    			numberOfDecimalPoints += 1;
-    			if (numberOfDecimalPoints <= 1) {
-    				validProjectGrade = true;
-    			} else if (numberOfDecimalPoints > 1) {
-    				validProjectGrade = false;
-    				projectErrorLabel.setText("You used " + numberOfDecimalPoints + " decimal points in a project grade. Make sure to enter one decimal");
-    			} 
-    		// Check if the character is a digit 	
-    		} else if (!Character.isDigit(c)) {
-    			validProjectGrade = false;
-    			projectErrorLabel.setText("Do not use " + c + " in a project grade. Make sure to enter a number between 0 and 100"); 
-			
-			
-			}
-        			
-    	}		
-    	
-    	
-    	// Convert the string entered by the user into a number
-    	// Otherwise the project grade will default to zero 
-    	
-    	double projectGrade = 0;
-    	if (validProjectGrade) {
-    		projectGrade = Double.parseDouble(valueEntered);
+    		if (Double.parseDouble(textFieldArrayList.get(i).getText()) < Double.parseDouble(textFieldArrayList.get(i+1).getText())) {
+    			smallestNumberKey = i;
+    		} else if (Double.parseDouble(textFieldArrayList.get(i).getText()) > Double.parseDouble(textFieldArrayList.get(i+1).getText())) {
+    			smallestNumberKey = i+1;
+    		}
     	}
     	
-    	// Check if the number entered by the user is a valid percentage grade
-    	// If valid, include the provided number in the overall grade calculation    
-    	if (projectGrade < 0 || projectGrade > 100) {
-    		projectErrorLabel.setText("Project grade should be between 0% and 100%");
-    		projectGrade = 0;    	
-    	}
-    	
-    	return projectGrade;
-    	
+    	textFieldArrayList.remove(smallestNumberKey);
     }
+    
+    
+    
     
     double averageofRequiredQuizGrades = 0.0;
-    
+    Label requiredQuizErrorlabel = new Label();
     
     void calculateAverageRequiredQuizGrade(Scene mainScene, ArrayList<TextField> quizGradeTextfields) {
-    	applicationStage.setScene(mainScene);
+    	requiredQuizErrorlabel.setText("");
+    
+    	// Assume that each quiz has equal weight
+    	double weightPerQuiz = 1.0/15;
+  
     	// Made sure to reset to zero, in case it contains a  previously computed value
     	averageofRequiredQuizGrades = 0.0;
+    	boolean errorInQuizGrade = false;
+    	
     	for (TextField quizGradeTextfield : quizGradeTextfields) {
-    		averageofRequiredQuizGrades += Double.parseDouble(quizGradeTextfield.getText());
+    		Grade quizGrade = new Grade(0, 10, weightPerQuiz);
+    		String errorMessage = quizGrade.setValue(quizGradeTextfield.getText());
+    		if (!errorMessage.equals("")) {
+    			errorInQuizGrade = true;
+    			requiredQuizErrorlabel.setText(errorMessage);
+    		}
+    		averageofRequiredQuizGrades += quizGrade.getWeightedPercentageGrade();
     	}
     	
-    	averageofRequiredQuizGrades = averageofRequiredQuizGrades / 150;
-    	averageRequiredQuizGradeLabel.setText(String.format("Average required quiz grade: %.2f%%", averageofRequiredQuizGrades*100));
+    	if (!errorInQuizGrade) {
+    		applicationStage.setScene(mainScene);
+    		averageRequiredQuizGradeLabel.setText(String.format("Average required quiz grade: %.2f%%", averageofRequiredQuizGrades));
+    	} 
+    	
+    	
+    	
 
     	
     }
     
-    double averageofOptionalQuizGrades = 0.0;
-    
-    void calculateAverageOptionalQuizGrade(Scene mainScene, ArrayList<TextField> quizGradeTextfields) {
-    	applicationStage.setScene(mainScene);
-    	// Made sure to reset to zero, in case it contains a  previously computed value
-    	averageofOptionalQuizGrades = 0.0;
-    	
-    	ArrayList<Double> grades = new ArrayList<Double>();
-		for (TextField quizGradeTextfield : quizGradeTextfields) {
-			grades.add(Double.parseDouble(quizGradeTextfield.getText()));
-		}
-
-    	
-    	if (quizGradeTextfields.size() > 5) {
-    		grades.remove(grades.indexOf(Collections.min(grades)));
-    		grades.remove(grades.indexOf(Collections.min(grades)));
-		}
-    	
-    	
-    	for (double grade : grades) {
-    		averageofOptionalQuizGrades += grade;
-    	
-    	}
-    	
-    	averageofOptionalQuizGrades = averageofOptionalQuizGrades / 50;
-    	averageOptionalQuizGradeLabel.setText(String.format("Average optional quiz grade: %.2f%%", averageofOptionalQuizGrades*100));
-    }
-   
     
     @FXML
     void getRequiredQuizGrades(ActionEvent enterRequiredQuizGradeEvent) {
@@ -157,6 +108,7 @@ public class GradeController {
     	int numberOfQuizzes = requiredQuizzesCompletedChoiceBox.getValue();
     	int rowsCreated = 0;
     	VBox quizGradeContainer = new VBox();
+    	
     	Label quizType = new Label("Enter each of your required quiz grades out of 10:");
     	quizGradeContainer.getChildren().add(quizType);
     	
@@ -181,10 +133,49 @@ public class GradeController {
     	doneButton.setOnAction(doneEvent -> calculateAverageRequiredQuizGrade(mainScene, quizGradeTextfields));
     	quizGradeContainer.getChildren().add(doneButton);
     	
+
+    	quizGradeContainer.getChildren().add(requiredQuizErrorlabel);
     	
     	Scene quizGradesScene = new Scene(quizGradeContainer);
     	applicationStage.setScene(quizGradesScene);
     }
+    
+    
+    double averageofOptionalQuizGrades = 0.0;
+    Label optionalQuizErrorlabel = new Label();
+
+    void calculateAverageOptionalQuizGrade(Scene mainScene, ArrayList<TextField> quizGradeTextfields) {
+    	 	
+    	while (quizGradeTextfields.size() > 5) {
+    		removeSmallest(quizGradeTextfields);
+    	}
+    	
+    	
+    	optionalQuizErrorlabel.setText("");
+        
+    	// Assume that each quiz has equal weight
+    	double weightPerQuiz = 1.0/5;
+  
+    	// Made sure to reset to zero, in case it contains a  previously computed value
+    	averageofOptionalQuizGrades = 0.0;
+    	boolean errorInQuizGrade = false;
+    	
+    	for (TextField quizGradeTextfield : quizGradeTextfields) {
+    		Grade quizGrade = new Grade(0, 10, weightPerQuiz);
+    		String errorMessage = quizGrade.setValue(quizGradeTextfield.getText());
+    		if (!errorMessage.equals("")) {
+    			errorInQuizGrade = true;
+    			optionalQuizErrorlabel.setText(errorMessage);
+    		}
+    		averageofOptionalQuizGrades += quizGrade.getWeightedPercentageGrade();
+    	}
+    	
+    	if (!errorInQuizGrade) {
+    		applicationStage.setScene(mainScene);
+    		averageOptionalQuizGradeLabel.setText(String.format("Average required quiz grade: %.2f%%", averageofOptionalQuizGrades));
+    	} 
+    }
+   
     
     
     @FXML
@@ -194,6 +185,9 @@ public class GradeController {
     	int numberOfQuizzes = optionalQuizzesCompletedChoiceBox.getValue();
     	int rowsCreated = 0;
     	VBox quizGradeContainer = new VBox();
+    	
+
+    	
     	Label quizType = new Label("Enter each of your optional quiz grades out of 10:");
     	quizGradeContainer.getChildren().add(quizType);
     	
@@ -212,13 +206,19 @@ public class GradeController {
         	
         	quizGradeContainer.getChildren().add(rowContainer);
     		
+        	
     		
     	}
+
+    	
+    	
     	
     	Button doneButton = new Button("Done");
     	doneButton.setOnAction(doneEvent -> calculateAverageOptionalQuizGrade(mainScene, quizGradeTextfields));
-    	quizGradeContainer.getChildren().add(doneButton);
+    		
     	
+    	quizGradeContainer.getChildren().add(doneButton);
+    	quizGradeContainer.getChildren().add(optionalQuizErrorlabel);
     	
     	Scene quizGradesScene = new Scene(quizGradeContainer);
     	applicationStage.setScene(quizGradesScene);
@@ -226,41 +226,28 @@ public class GradeController {
     
     @FXML
     void calculateGrade(ActionEvent event) {
-    	
     	// Clear all error messages
     	projectErrorLabel.setText("");
-    	double courseGrade = 0.0;
     	
-    	
-    	// Assuming the project is worth 50% towards the course grade
-    	String projectValueEntered = projectGradeTextfield.getText();
-    	
-    	double projectGrade = getProjectGrade(projectValueEntered);    	
-    	
-    	courseGrade += projectGrade*0.5;
-    	
-    	
-    	System.out.println("Project grade entered: " + projectGrade + " Course grade so far: " + courseGrade);
-    	
-    	
-    	// Number of quizzes passed
-    	// assuming that quizzes are worth 25% towards the course grade
-    	// assuming that there are 15 required quizzes and 7 optional
+    	// Project Grade
+    	Grade myProjectGrade = new Grade(0, 100, 0.5);
+    	projectErrorLabel.setText(myProjectGrade.setValue(projectGradeTextfield.getText()));
 
-    	courseGrade += (averageofRequiredQuizGrades)*18.75;
-    	courseGrade += (averageofOptionalQuizGrades)*6.25;
-    	
-    	
-    	// Number of coding challenges passed
-    	// assuming that coding challenges are worth 25% towards the course grade
-    	// assuming that there are 20 coding challenges
-    	int requiredCodingChallengesPassed = requiredCodingChallengesChoicebox.getValue(); 
-    	int optionalCodingChallengesPassed = optionalCodingChallengesChoiceBox.getValue();
-    	int codingChallengesPassed = requiredCodingChallengesPassed + optionalCodingChallengesPassed;
-    	courseGrade += (codingChallengesPassed*(100/20))*0.25;
-    	System.out.println("Coding Challenges Passed: " + codingChallengesPassed + " Course grade so far: " + courseGrade);
+    	Grade optionalQuizGrade = new Grade(averageofOptionalQuizGrades/10.0, 10, 0.0625);
+    	Grade requiredQuizGrade = new Grade(averageofRequiredQuizGrades/10.0, 10, 0.1875);
+    	Grade optionalCCGrade = new Grade(optionalCodingChallengesChoiceBox.getValue(), 5, 0.0625);
+    	Grade requiredCCGrade = new Grade(requiredCodingChallengesChoicebox.getValue(), 15, 0.1875);
 
-    	courseGradeLabel.setText(String.format("Your course grade is %.2f", courseGrade));
+    	double courseGrade = myProjectGrade.getWeightedPercentageGrade()
+    			+ optionalQuizGrade.getWeightedPercentageGrade()
+    			+ requiredQuizGrade.getWeightedPercentageGrade()
+    			+ optionalCCGrade.getWeightedPercentageGrade()
+    			+ requiredCCGrade.getWeightedPercentageGrade();
+    	
+    	
+    	// Display result of calculation to user in the window
+    	courseGradeLabel.setText(String.format("Your course grade is %.2f%%", courseGrade));
+    	
     }
 
 }
