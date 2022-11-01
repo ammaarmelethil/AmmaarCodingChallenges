@@ -22,8 +22,8 @@ public class Flight {
 	}
 
 	public Flight(Flight toCopy) {
-//		departure = toCopy.departure;
-//		arrival = toCopy.arrival;
+		departure = toCopy.departure;
+		arrival = toCopy.arrival;
 	}
 
 	public long length() {
