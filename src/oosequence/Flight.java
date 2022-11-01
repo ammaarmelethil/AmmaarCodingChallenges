@@ -1,7 +1,7 @@
 package oosequence;
 
 import java.util.Date;
-//import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit;
 
 public class Flight {
 	Date departure;
@@ -28,9 +28,9 @@ public class Flight {
 
 	public long length() {
 		long duration = 0;
-//		if (departure != null && arrival != null) {
-//			duration = TimeUnit.MINUTES.convert(arrival.getTime()-departure.getTime(), TimeUnit.MILLISECONDS);
-//		}
+		if (departure != null && arrival != null) {
+			duration = TimeUnit.MINUTES.convert(arrival.getTime()-departure.getTime(), TimeUnit.MILLISECONDS);
+		}
 		return duration;
 	}
 
