@@ -6,33 +6,33 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Itinerary {
-	private ArrayList<Flight> flights;
+	private ArrayList<TripComponent> flights;
 	private String name = "";
 	
 	public Itinerary(String name) {
 		this.name = name;
-		flights = new ArrayList<Flight>();
+		flights = new ArrayList<TripComponent>();
 	}
 
 	public String getName() {
 		return name;
 	}
 	
-	public ArrayList<Flight> getFlights() {
+	public ArrayList<TripComponent> getFlights() {
 		return flights;
 	}
 
-	public void addFlight(Flight flightToAdd) {
+	public void addFlight(TripComponent flightToAdd) {
 		boolean overlap = false;
 		for (int i = 0; i < flights.size(); i++) {
-			if (flights.get(i).getArrival().after(flightToAdd.getDeparture()) && flights.get(i).getDeparture().before(flightToAdd.getArrival())) {
+			if (flights.get(i).getEnd().after(flightToAdd.getStart()) && flights.get(i).getStart().before(flightToAdd.getEnd())) {
 				overlap = true;
 			}
 		}
 	
 		if (overlap == false) {
 			flights.add(flightToAdd);
-			Collections.sort(flights, (a, b) -> a.getArrival().compareTo(b.getArrival()));
+			Collections.sort(flights, (a, b) -> a.getEnd().compareTo(b.getEnd()));
 		}
 		
 
@@ -41,7 +41,7 @@ public class Itinerary {
 	public long getTotalLayover() {
 		long layoverTime = 0;
 		for (int i = 0; i < flights.size() - 1 ; i++) {
-			layoverTime += TimeUnit.MINUTES.convert((flights.get(i+1).getDeparture().getTime()) - (flights.get(i).getArrival().getTime()), TimeUnit.MILLISECONDS);
+			layoverTime += TimeUnit.MINUTES.convert((flights.get(i+1).getStart().getTime()) - (flights.get(i).getEnd().getTime()), TimeUnit.MILLISECONDS);
 		}
 		return layoverTime;
 	}
