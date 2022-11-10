@@ -23,7 +23,7 @@ public class Flight extends TripComponent {
 	}
 
 	public String getDuration() {
-		return null;
+		return String.format("%d minutes", lengthInSeconds() / 60);
 	}
 	
 	
