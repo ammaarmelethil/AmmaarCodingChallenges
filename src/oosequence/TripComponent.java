@@ -11,36 +11,19 @@ public class TripComponent {
 	
 	public void setStart(Date departureDate) {
 		if (end != null) {
-			if (departureDate.before(end)) {
-				start = departureDate;
-			} 
-		} else if (departureDate == null || end == null) {
-			start = departureDate;
-		}
-
-		
-	}
-
+			if (departureDate.before(end)) {start = departureDate;} 
+		} 	else if (departureDate == null || end == null) {start = departureDate;}}
 	
+	public Date getStart() {return start;}
 
 	public void setEnd(Date arrivalDate) {
 		if (start != null) {
-			if (arrivalDate.after(start)) {
-				end = arrivalDate;
-			} 
-		} else if (arrivalDate == null || start == null) {
-			end = arrivalDate;
-		}
-		
-	} 
+			if (arrivalDate.after(start)) {end = arrivalDate;} 
+		} 	else if (arrivalDate == null || start == null) {end = arrivalDate;}} 
 	
-	public Date getStart() {
-		return start;
-	}
+	public Date getEnd() {return end;}
 	
-	public Date getEnd() {
-		return end;
-	}
+	public TripComponent(){}
 
 	public TripComponent(Date startDate, Date endDate) {
 		if (startDate != null && endDate != null) {
@@ -55,30 +38,13 @@ public class TripComponent {
 			start = startDate;
 			end = endDate;
 		}
-		
-	}
-		
-	public TripComponent() {
-		
 	}
 
-	public TripComponent(TripComponent toCopy) {
-		start = toCopy.start;
-		end = toCopy.end;
-	}
+	public TripComponent(TripComponent toCopy) {start = toCopy.start;end = toCopy.end;}
 
 	public long lengthInSeconds() {
 		long duration = 0;
-		if (start != null && end != null) {
-			duration = TimeUnit.SECONDS.convert(end.getTime()-start.getTime(), TimeUnit.MILLISECONDS);
-		}
+		if (start != null && end != null) {duration = TimeUnit.SECONDS.convert(end.getTime()-start.getTime(), TimeUnit.MILLISECONDS);}
 		return duration;
 	}
-
-
-
-	
-
-
-
 }
