@@ -14,14 +14,26 @@ public class TripComponent {
 			if (departureDate.before(end)) {start = departureDate;} 
 		} 	else if (departureDate == null || end == null) {start = departureDate;}}
 	
-	public Date getStart() {return start;}
+	public String getStart() {
+		String theStart = ""; 
+		if (start != null) {
+			theStart = start.toString();	
+		}
+		return theStart;
+	}
 
 	public void setEnd(Date arrivalDate) {
 		if (start != null) {
 			if (arrivalDate.after(start)) {end = arrivalDate;} 
 		} 	else if (arrivalDate == null || start == null) {end = arrivalDate;}} 
 	
-	public Date getEnd() {return end;}
+	public String getEnd() {
+		String theEnd = ""; 
+		if (end != null) {
+			theEnd = end.toString();	
+		}
+		return theEnd;
+	}
 	
 	public TripComponent(){}
 
@@ -47,4 +59,17 @@ public class TripComponent {
 		if (start != null && end != null) {duration = TimeUnit.SECONDS.convert(end.getTime()-start.getTime(), TimeUnit.MILLISECONDS);}
 		return duration;
 	}
+	
+	public Date endForComparison() {
+		return end;
+	}
+
+	public boolean overlapsWith(TripComponent timePeriod) {
+		boolean overlap = false;
+		if (timePeriod.start != null && timePeriod.end != null) {
+			if (this.start != null && this.end != null) {
+				if (this.start.before(timePeriod.end) && this.end.after(timePeriod.start)) {overlap = true;}}}
+		return overlap;
+	}
 }
+

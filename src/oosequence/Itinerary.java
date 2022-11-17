@@ -6,44 +6,51 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Itinerary {
-	private ArrayList<TripComponent> flights;
+	private ArrayList<TripComponent> tripComponents;
 	private String name = "";
 	
 	public Itinerary(String name) {
 		this.name = name;
-		flights = new ArrayList<TripComponent>();
+		tripComponents = new ArrayList<TripComponent>();
 	}
 
 	public String getName() {
 		return name;
 	}
 	
-	public ArrayList<TripComponent> getFlights() {
-		return flights;
-	}
 
-	public void addFlight(TripComponent flightToAdd) {
+	public void addTripComponent(TripComponent trip) {
+
 		boolean overlap = false;
-		for (int i = 0; i < flights.size(); i++) {
-			if (flights.get(i).getEnd().after(flightToAdd.getStart()) && flights.get(i).getStart().before(flightToAdd.getEnd())) {
-				overlap = true;
+		
+			for (TripComponent trips : tripComponents) {
+				if (trips.overlapsWith(trip)) {
+					overlap = true;
+				}
 			}
-		}
+		
+			if (overlap == false) {
+				tripComponents.add(trip);
+				Collections.sort(tripComponents, (a,b) -> a.endForComparison().compareTo(b.endForComparison()));
+			}
+	}
+		
+		
+		
+
+	public ArrayList<TripComponent> getTripComponents() {
+		return tripComponents;
+	}
 	
-		if (overlap == false) {
-			flights.add(flightToAdd);
-			Collections.sort(flights, (a, b) -> a.getEnd().compareTo(b.getEnd()));
+	public String toString() {
+		String theTrips = "";
+		
+		for (TripComponent trips : tripComponents) {
+			theTrips += tripComponents.indexOf(trips) + "\t" + trips.getStart() + "\t" + trips.getEnd() + "\n";
 		}
 		
 
-	}
-
-	public long getTotalLayover() {
-		long layoverTime = 0;
-		for (int i = 0; i < flights.size() - 1 ; i++) {
-			layoverTime += TimeUnit.MINUTES.convert((flights.get(i+1).getStart().getTime()) - (flights.get(i).getEnd().getTime()), TimeUnit.MILLISECONDS);
-		}
-		return layoverTime;
+		return this.name + "\n" + theTrips;
 	}
 
 }
